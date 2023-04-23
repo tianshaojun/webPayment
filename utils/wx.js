@@ -1,14 +1,20 @@
 const axios = require("axios").default;
 const crypto = require("crypto");
 const qs = require("qs"); //使用qs模块做字符串转换
+const xml2js = require("xml2js");
 
 // const appid = ""; // 公众账号id
 // const mchid = ""; // 商户号
 // const notifyUrl = ""; // 回调地址
 // const mchKey = ""; // 商户密钥
 
+const appid = ""; // 公众账号id
+const mchid = ""; // 商户号
+const notifyUrl = ""; //回调地址
+const mchKey = ""; //商户密钥
 
-//支付签名
+
+//支付签名方法
 function signPayParams(params) {
     const sortedParams = Object.keys(params)
         .sort()
@@ -22,6 +28,7 @@ function signPayParams(params) {
     return signResult;
 }
 
+//统一下单方法
 async function wxPay(payload, tradeType = "NATIVE") {
     const { body, orderNo, ip, totalFee, nonceStr, openid } = payload;
     const paramsNeedSign = {
@@ -63,9 +70,29 @@ async function wxPay(payload, tradeType = "NATIVE") {
             }
         }
     );
-    // console.log(result.data);
+    console.log(result.data);
     return await xml2js.parseStringPromise(result.data, {
         cdata: true,
         explicitArray: false
     });
 }
+
+// wxPay({
+//     body: "测试下单",
+//     orderNo: "D" + Date.now(),
+//     ip: "14.90.188.21",
+//     totalFee: 1,
+//     nonceStr: Date.now()
+// });
+
+module.exports = {
+    wxPay,
+    signPayParams,
+    // getJsAPITicket,
+    // getAccessToken,
+    // fullUrl,
+    // signParams,
+    // appid,
+    // getOauthUrl,
+    // getOpenId
+};
